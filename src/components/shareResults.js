@@ -24,11 +24,12 @@ const ShareResults = () => {
 
   const location = useLocation(); // Get location from react-router-dom
   const imageUrl = location.state && location.state.imageUrl; // Retrieve imageUrl from location state
-
+  console.log('Image URL:', imageUrl);
   // Function to handle click on Facebook share button
   const handleFacebookShare = async () => {
     try {
       const dataUrl = await toPng(document.getElementById('result-card')); // Capture the Card element
+      console.log('Data URL:', dataUrl);
       window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(title)}&picture=${encodeURIComponent(dataUrl)}`, '_blank');
     } catch (error) {
       console.error('Error generating image:', error);

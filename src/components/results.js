@@ -4,15 +4,17 @@ import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import GaugeChart from 'react-gauge-chart';
-import { toPng } from 'html-to-image'; // Corrected import
+import { toPng } from 'html-to-image'; 
 import { useNavigate } from 'react-router-dom';
 import data from '../data/assessment.json';
-import './styles.css'; // Custom CSS file for additional styles
+import './styles.css'; 
+
 const resultsData = data.results;
+
 const Results = () => {
   const score = useSelector((state) => state.quiz.score);
   const navigate = useNavigate();
-  const scorePercentage = score / 10; // Assuming score is out of 10 for the gauge chart
+  const scorePercentage = score / 10; 
   const [imageUrl, setImageUrl] = useState(null);
   const resultRef = useRef(null);
 
@@ -27,7 +29,8 @@ const Results = () => {
       try {
         const dataUrl = await toPng(resultRef.current); // Use toPng directly
         setImageUrl(dataUrl);
-        navigate('/share-results', { state: { imageUrl: dataUrl } });
+        localStorage.setItem('imageUrl', dataUrl);
+        navigate('/share-results');
       } catch (error) {
         console.error('Error generating image:', error);
       }
