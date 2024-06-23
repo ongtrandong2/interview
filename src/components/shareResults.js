@@ -14,7 +14,7 @@ const ShareResults = () => {
   const title = 'Check out my results in the Voice of the Customer assessment!';
 
   return (
-    <div className="d-flex justify-content-center align-items-center main-container">
+    <div className="d-flex justify-content-center align-items-center main-container " style={{height:"auto"}}>
       <Helmet>
         <title>{title}</title>
         <meta property="og:title" content={title} />
