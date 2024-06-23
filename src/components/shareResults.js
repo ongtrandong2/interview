@@ -7,10 +7,10 @@ import { FacebookShareButton, FacebookIcon } from 'react-share';
 import { useLocation } from 'react-router-dom';
 import { toPng } from 'html-to-image'; // Import toPng from html-to-image
 import './styles.css'; // Custom CSS file for additional styles
-
+import data from '../data/assessment.json';
 const ShareResults = () => {
   const score = useSelector((state) => state.quiz.score);
-  const resultsData = useSelector((state) => state.resultsData || []);
+  const resultsData = data.results;
   const scorePercentage = score / 10;
 
   const calculateLevel = (score) => {
@@ -19,30 +19,22 @@ const ShareResults = () => {
   };
 
   const currentLevelData = calculateLevel(score);
-  const shareUrl = `${window.location.origin}/results`;
+  const shareUrl = `${window.location.origin}/share-results`;
   const title = `I achieved ${currentLevelData.name} level in the Voice of the Customer assessment!`;
 
-  const location = useLocation(); // Get location from react-router-dom
-  const imageUrl = location.state && location.state.imageUrl; // Retrieve imageUrl from location state
-  console.log('Image URL:', imageUrl);
-  // Function to handle click on Facebook share button
-  const handleFacebookShare = async () => {
-    try {
-      const dataUrl = await toPng(document.getElementById('result-card')); // Capture the Card element
-      console.log('Data URL:', dataUrl);
-      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(title)}&picture=${encodeURIComponent(dataUrl)}`, '_blank');
-    } catch (error) {
-      console.error('Error generating image:', error);
-    }
-  };
+  // Retrieve imageUrl from localStorage
+  const imageUrl = localStorage.getItem('imageUrl');
 
   return (
     <div className="d-flex justify-content-center align-items-center main-container">
       <Container className="container-box text-center">
-        <Card id="result-card" className="p-4" style={{ backgroundColor: '#0f2a4d', color: 'white', borderRadius: '10px' }}>
+        <Card className="p-4" style={{ backgroundColor: '#0f2a4d', color: 'white', borderRadius: '10px' }}>
           <h2>Share Your Results</h2>
           <p>Level: {currentLevelData.name}</p>
-          <FacebookShareButton url={shareUrl} quote={title} className="my-3" onClick={handleFacebookShare}>
+          {imageUrl && (
+            <img src={imageUrl} alt="Result" style={{ maxWidth: '100%', borderRadius: '10px' }} />
+          )}
+          <FacebookShareButton url={shareUrl} quote={title} className="my-3">
             <FacebookIcon size={36} />
             <span className="ml-2">Share on Facebook</span>
           </FacebookShareButton>
