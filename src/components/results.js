@@ -8,9 +8,7 @@ import { toPng } from 'html-to-image'; // Corrected import
 import { useNavigate } from 'react-router-dom';
 import data from '../data/assessment.json';
 import './styles.css'; // Custom CSS file for additional styles
-
 const resultsData = data.results;
-
 const Results = () => {
   const score = useSelector((state) => state.quiz.score);
   const navigate = useNavigate();
