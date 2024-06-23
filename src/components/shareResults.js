@@ -1,32 +1,36 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { FacebookShareButton, FacebookIcon } from 'react-share';
-import { Helmet } from 'react-helmet';
 import './styles.css'; // Custom CSS file for additional styles
 
-const ShareResults = () => {
-  const location = useLocation();
-  const { imageUrl } = location.state || {};
-  const shareUrl = window.location.href;
-  const title = 'Check out my results in the Voice of the Customer assessment!';
+const ShareResults = ({ location }) => {
+  const score = useSelector((state) => state.quiz.score);
+  const resultsData = useSelector((state) => state.resultsData); // Assuming resultsData is stored in Redux
+  const scorePercentage = score / 10; // Assuming score is out of 10 for the gauge chart
+
+  const calculateLevel = (score) => {
+    return resultsData.find(result => score >= result.range[0] && score < result.range[1]);
+  };
+
+  const currentLevelData = calculateLevel(score);
+  const shareUrl = `${window.location.origin}/results`;
+  const title = `I achieved ${currentLevelData.name} level in the Voice of the Customer assessment!`;
+
+  // Extract imageUrl from location state
+  const imageUrl = location.state && location.state.imageUrl;
 
   return (
-    <div className="d-flex justify-content-center align-items-center main-container " style={{height:"auto"}}>
-      <Helmet>
-        <title>{title}</title>
-        <meta property="og:title" content={title} />
-        <meta property="og:image" content={imageUrl} />
-        <meta property="og:url" content={shareUrl} />
-        <meta property="og:type" content="website" />
-      </Helmet>
+    <div className="d-flex justify-content-center align-items-center main-container">
       <Container className="container-box text-center">
         <Card className="p-4" style={{ backgroundColor: '#0f2a4d', color: 'white', borderRadius: '10px' }}>
           <h2>Share Your Results</h2>
-          <p>Your results are ready to be shared!</p>
-          {imageUrl && <img src={imageUrl} alt="Result" style={{ width: '100%', height: 'auto' }} />}
+          <p>Level: {currentLevelData.name}</p>
+          {imageUrl && (
+            <img src={imageUrl} alt="Result" style={{ maxWidth: '100%', borderRadius: '10px' }} />
+          )}
           <FacebookShareButton url={shareUrl} quote={title} className="my-3">
             <FacebookIcon size={36} />
             <span className="ml-2">Share on Facebook</span>
